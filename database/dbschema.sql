@@ -210,3 +210,19 @@ CREATE OR REPLACE TRIGGER trg_inventory_updated_at
 BEGIN
     :NEW.updated_at := CURRENT_TIMESTAMP;
 END;
+
+-- sample data population
+INSERT INTO categories (name, description) VALUES ('Sourdough Breads', 'Traditional sourdough breads with yeast fermentation'),
+('Sourdough Focaccias', 'Flavors change daily'),
+('Sourdough Sweets', 'Sweet baked good');
+
+INSERT INTO products (name, description, price, category_id, prep_time_hours) VALUES 
+('Classic', 'Traditional white sourdough with crispy crust and tangy flavor', 8.50, 1, 48),
+('Seeded', 'Savory and nutritious loaf of seeded sourdough bread', 9.00, 1, 48),
+('Turmeric', 'Great for soups and stews!', 6.00, 1, 24),
+('Rosemary & Kalamata Olives', 'Amazing sourdough bread with whole wheat & bread flour with kalamata olives and rosemary', 9.50, 1, 48),
+('Individual Focaccia', 'Naturally leavened focaccia', 6.00, 2, 24),
+('Party Size Focaccia', '20x20 in size', 8.00, 2, 24),
+('Chocolate Chip Cookies', 'Soft, chewy and packed with chocolate chunks', 9.00, 3, 24),
+('Glazed Cinnamon Rolls', 'Soft, gooey and delicious', 10.15, 3, 24),
+('Vegan Cholocate & Orange Cake', 'Perfect as a dessert or simply with a cuppa whenever you fancy', 10.15, 3, 24);
