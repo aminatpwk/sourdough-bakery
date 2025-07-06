@@ -44,4 +44,7 @@ public class ProductService {
     public List<Product> getProductsByAvailability(boolean isAvailable){
         return productRepository.findByAvailability(isAvailable);
     }
+    public List<Product> getProductsByFeatured(boolean isFeatured){
+        return productRepository.findByFeatured(isFeatured);
+    }
 }

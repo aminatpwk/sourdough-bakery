@@ -54,4 +54,9 @@ public class ProductController {
     public List<Product> getProductsByAvailability(@RequestParam boolean available) {
         return productService.getProductsByAvailability(available);
     }
+
+    @GetMapping("/featured")
+    public List<Product> getProductsByFeatured(@RequestParam boolean featured) {
+        return productService.getProductsByFeatured(featured);
+    }
 }

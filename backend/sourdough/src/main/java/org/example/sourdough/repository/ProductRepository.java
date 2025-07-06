@@ -14,4 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.is_available = :isAvailable")
     List<Product> findByAvailability(@Param("isAvailable") boolean isAvailable);
+
+    @Query("SELECT p FROM Product p WHERE p.is_featured = :isFeatured")
+    List<Product> findByFeatured(@Param("isFeatured") boolean isFeatured);
 }
