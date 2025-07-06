@@ -37,4 +37,8 @@ public class ProductService {
         existingProduct.setIs_featured(updatedProduct.isIs_featured());
         return productRepository.save(existingProduct);
     }
+
+    public List<Product> getProductsByCategory(Long categoryId) {
+        return productRepository.findByCategory(categoryId);
+    }
 }

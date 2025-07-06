@@ -40,4 +40,13 @@ public class ProductController {
         Product product = productService.updateProduct(id, updatedProduct);
         return ResponseEntity.ok(product);
     }
+
+    @GetMapping("/by-category/{categoryId}")
+    public List<Product> getProducts(@PathVariable Long categoryId) {
+        if(categoryId != null) {
+            return productService.getProductsByCategory(categoryId);
+        }else{
+            return productService.getAllProducts();
+        }
+    }
 }
