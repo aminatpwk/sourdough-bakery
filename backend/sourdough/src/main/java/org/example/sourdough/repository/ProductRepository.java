@@ -17,4 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.is_featured = :isFeatured")
     List<Product> findByFeatured(@Param("isFeatured") boolean isFeatured);
+
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%',:keyword, '%'))")
+    List<Product> searchByKeyword(@Param("keyword") String keyword);
 }

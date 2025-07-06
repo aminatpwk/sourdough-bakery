@@ -47,4 +47,8 @@ public class ProductService {
     public List<Product> getProductsByFeatured(boolean isFeatured){
         return productRepository.findByFeatured(isFeatured);
     }
+
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.searchByKeyword(keyword);
+    }
 }

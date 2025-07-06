@@ -59,4 +59,9 @@ public class ProductController {
     public List<Product> getProductsByFeatured(@RequestParam boolean featured) {
         return productService.getProductsByFeatured(featured);
     }
+
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam String q){
+        return productService.searchProducts(q);
+    }
 }
