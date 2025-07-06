@@ -41,4 +41,7 @@ public class ProductService {
     public List<Product> getProductsByCategory(Long categoryId) {
         return productRepository.findByCategory(categoryId);
     }
+    public List<Product> getProductsByAvailability(boolean isAvailable){
+        return productRepository.findByAvailability(isAvailable);
+    }
 }

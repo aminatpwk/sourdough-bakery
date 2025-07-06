@@ -49,4 +49,9 @@ public class ProductController {
             return productService.getAllProducts();
         }
     }
+
+    @GetMapping("/availability")
+    public List<Product> getProductsByAvailability(@RequestParam boolean available) {
+        return productService.getProductsByAvailability(available);
+    }
 }
