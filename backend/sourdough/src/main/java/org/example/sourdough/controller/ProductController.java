@@ -1,8 +1,7 @@
 package org.example.sourdough.controller;
 
 import org.example.sourdough.model.Product;
-import org.example.sourdough.repository.ProductRepository;
-import org.example.sourdough.service.ProductService;
+import org.example.sourdough.service.products.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
     }
 

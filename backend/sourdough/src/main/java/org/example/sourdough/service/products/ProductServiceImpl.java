@@ -1,4 +1,4 @@
-package org.example.sourdough.service;
+package org.example.sourdough.service.products;
 
 import org.example.sourdough.model.Product;
 import org.example.sourdough.repository.ProductRepository;
@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductService {
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    public ProductService(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
