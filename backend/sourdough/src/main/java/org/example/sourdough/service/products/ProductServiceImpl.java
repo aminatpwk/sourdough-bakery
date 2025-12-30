@@ -16,6 +16,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+
     public Product addProduct(Product product) {
         return productRepository.save(product);
     }
@@ -41,9 +42,11 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByCategory(Long categoryId) {
         return productRepository.findByCategory(categoryId);
     }
+
     public List<Product> getProductsByAvailability(boolean isAvailable){
         return productRepository.findByAvailability(isAvailable);
     }
+
     public List<Product> getProductsByFeatured(boolean isFeatured){
         return productRepository.findByFeatured(isFeatured);
     }
