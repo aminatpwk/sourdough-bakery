@@ -1,10 +1,13 @@
 package org.example.sourdough.service.users;
 
-import org.example.sourdough.model.User;
+import org.example.sourdough.model.dto.AuthenticationResponse;
+import org.example.sourdough.model.dto.LoginRequest;
+import org.example.sourdough.model.dto.RegistrationResponse;
 import org.example.sourdough.model.dto.UserDto;
 
 
 public interface AuthService {
-    public String registerUser(UserDto userDto);
-    public User loginUser(String email, String password);
+    public RegistrationResponse registerUser(UserDto userDto);
+    public AuthenticationResponse loginUser(LoginRequest loginRequest);
+    public AuthenticationResponse refreshToken(AuthenticationResponse authenticationResponse);
 }

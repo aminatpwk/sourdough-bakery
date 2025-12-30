@@ -1,8 +1,9 @@
 package org.example.sourdough.controller;
 
 import jakarta.validation.Valid;
+import org.example.sourdough.model.ErrorResponse;
 import org.example.sourdough.model.User;
-import org.example.sourdough.model.dto.UserDto;
+import org.example.sourdough.model.dto.*;
 import org.example.sourdough.service.users.AuthService;
 import org.example.sourdough.service.users.AuthServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -27,21 +28,30 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto) {
         try {
-            String message = authService.registerUser(userDto);
-            return ResponseEntity.ok(message);
+            RegistrationResponse response = authService.registerUser(userDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
-            User user = authService.loginUser(userDto.getEmail(), userDto.getPassword());
-            //TODO: generate token here instead of the response code
-            return ResponseEntity.ok("Login successful for user: " + user.getEmail());
+            AuthenticationResponse response = authService.loginUser(loginRequest);
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Invalid email or password"));
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            AuthenticationResponse response = authService.refreshToken(request.getRefreshToken());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Invalid or expired refresh token"));
         }
     }
 
