@@ -1,5 +1,8 @@
 package org.example.sourdough.service.users;
 
+import org.example.sourdough.exception.AuthenticationFailedException;
+import org.example.sourdough.exception.InvalidTokenException;
+import org.example.sourdough.exception.ResourceAlreadyExistsException;
 import org.example.sourdough.model.User;
 import org.example.sourdough.model.dto.AuthenticationResponse;
 import org.example.sourdough.model.dto.LoginRequest;
@@ -10,6 +13,7 @@ import org.example.sourdough.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,7 +37,7 @@ public class AuthServiceImpl {
     public RegistrationResponse registerUser(UserDto userDto) {
         Optional<User> existingUser = userRepository.findByEmail(userDto.getEmail());
         if(existingUser.isPresent()) {
-            throw new RuntimeException("User with this e-mail already exists.");
+            throw new ResourceAlreadyExistsException("User", "email", userDto.getEmail());
         }
 
         User newUser = new User();
@@ -51,12 +55,16 @@ public class AuthServiceImpl {
     }
 
     public AuthenticationResponse loginUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+        }catch(AuthenticationException e){
+            throw new AuthenticationFailedException("Invalid e-mail or password.");
+        }
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
         UserDetails userDetails = new SecurityUser(user);
         String accessToken = jwtService.generateToken(userDetails);
@@ -72,21 +80,25 @@ public class AuthServiceImpl {
     }
 
     public AuthenticationResponse refreshToken(String refreshToken) {
-        String userEmail = jwtService.extractUsername(refreshToken);
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
-        UserDetails userDetails = new SecurityUser(user);
+        try{
+            String userEmail = jwtService.extractUsername(refreshToken);
+            User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+            UserDetails userDetails = new SecurityUser(user);
 
-        if (jwtService.isValidJwt(refreshToken, userDetails)) {
-            String newAccessToken = jwtService.generateToken(userDetails);
-            return new AuthenticationResponse(
-                    newAccessToken,
-                    refreshToken,
-                    user.getEmail(),
-                    user.getFirst_name(),
-                    user.getLast_name(),
-                    user.getRole());
-        } else {
-            throw new RuntimeException("Invalid refresh token");
+            if (jwtService.isValidJwt(refreshToken, userDetails)) {
+                String newAccessToken = jwtService.generateToken(userDetails);
+                return new AuthenticationResponse(
+                        newAccessToken,
+                        refreshToken,
+                        user.getEmail(),
+                        user.getFirst_name(),
+                        user.getLast_name(),
+                        user.getRole());
+            } else {
+                throw new InvalidTokenException("Invalid or expired refresh token");
+            }
+        }catch(Exception e){
+            throw new InvalidTokenException("Invalid refresh token.", e);
         }
     }
 }
