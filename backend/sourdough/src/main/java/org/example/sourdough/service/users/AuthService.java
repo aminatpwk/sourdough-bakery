@@ -9,5 +9,5 @@ import org.example.sourdough.model.dto.UserDto;
 public interface AuthService {
     public RegistrationResponse registerUser(UserDto userDto);
     public AuthenticationResponse loginUser(LoginRequest loginRequest);
-    public AuthenticationResponse refreshToken(AuthenticationResponse authenticationResponse);
+    public AuthenticationResponse refreshToken(String refreshToken);
 }

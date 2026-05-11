@@ -34,6 +34,7 @@ public class AuthServiceImpl {
         this.authenticationManager = authenticationManager;
     }
 
+
     public RegistrationResponse registerUser(UserDto userDto) {
         Optional<User> existingUser = userRepository.findByEmail(userDto.getEmail());
         if(existingUser.isPresent()) {
@@ -56,17 +57,19 @@ public class AuthServiceImpl {
 
     public AuthenticationResponse loginUser(LoginRequest loginRequest) {
         try{
-            Authentication authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
                             loginRequest.getPassword()
                     )
             );
-        }catch(AuthenticationException e){
+        } catch(AuthenticationException e){
             throw new AuthenticationFailedException("Invalid e-mail or password.");
         }
+
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
         UserDetails userDetails = new SecurityUser(user);
+
         String accessToken = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
@@ -85,19 +88,23 @@ public class AuthServiceImpl {
             User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
             UserDetails userDetails = new SecurityUser(user);
 
-            if (jwtService.isValidJwt(refreshToken, userDetails)) {
-                String newAccessToken = jwtService.generateToken(userDetails);
-                return new AuthenticationResponse(
-                        newAccessToken,
-                        refreshToken,
-                        user.getEmail(),
-                        user.getFirst_name(),
-                        user.getLast_name(),
-                        user.getRole());
-            } else {
+            if (!jwtService.isValidJwt(refreshToken, userDetails)) {
                 throw new InvalidTokenException("Invalid or expired refresh token");
             }
-        }catch(Exception e){
+
+            String newAccessToken = jwtService.generateToken(userDetails);
+            return new AuthenticationResponse(
+                    newAccessToken,
+                    refreshToken,
+                    user.getEmail(),
+                    user.getFirst_name(),
+                    user.getLast_name(),
+                    user.getRole());
+
+        } catch(InvalidTokenException e){
+            throw e;
+        }
+        catch(Exception e){
             throw new InvalidTokenException("Invalid refresh token.", e);
         }
     }
