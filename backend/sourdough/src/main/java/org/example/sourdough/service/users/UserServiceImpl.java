@@ -1,10 +1,11 @@
 package org.example.sourdough.service.users;
 
-import org.example.sourdough.model.User;
+import org.example.sourdough.model.dto.UserResponse;
 import org.example.sourdough.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -13,7 +14,11 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponse::from)
+                .collect(Collectors.toList());
     }
 }

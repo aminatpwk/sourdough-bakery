@@ -1,6 +1,6 @@
 package org.example.sourdough.model.dto;
 
-public static class MessageResponse {
+public class MessageResponse {
     private final String message;
 
     public MessageResponse(String message) {

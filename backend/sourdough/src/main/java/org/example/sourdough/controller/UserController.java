@@ -1,6 +1,6 @@
 package org.example.sourdough.controller;
 
-import org.example.sourdough.model.User;
+import org.example.sourdough.model.dto.UserResponse;
 import org.example.sourdough.service.users.UserServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 }
